@@ -1,5 +1,5 @@
 ---
-- name: Export AAP workflow configuration as IaC
+- name: Export AAP configuration as IaC
   hosts: localhost
   connection: local
   gather_facts: false
@@ -12,10 +12,6 @@
 
   vars:
     export_dir: "../exports"
-    export_workflows:
-      - "RHEL 7 to 8 Upgrade Workflow"
-      - "RHEL 8 to 9 Upgrade Workflow"
-      - "RHEL 9 to 10 Upgrade Workflow"
 
   pre_tasks:
     - name: Ensure export directory exists
@@ -30,83 +26,23 @@
         controller_validate_certs: "{{ controller_validate_certs | default(false) }}"
 
   tasks:
-    - name: Export RHEL upgrade workflow configuration
+    - name: Export all AAP controller assets
       ansible.controller.export:
-        workflow_job_templates: "{{ export_workflows }}"
+        all: true
         controller_host: "{{ controller_host }}"
         controller_username: "{{ controller_username }}"
         controller_password: "{{ controller_password }}"
         validate_certs: "{{ controller_validate_certs }}"
-      register: workflow_export
+      register: aap_export
 
-    - name: Save workflow export to YAML
+    - name: Save full AAP export to YAML
       ansible.builtin.copy:
-        dest: "{{ export_dir }}/rhel-upgrade-workflows-export.yml"
+        dest: "{{ export_dir }}/aap-controller-full-export.yml"
         mode: "0644"
-        content: "{{ workflow_export.assets | to_nice_yaml(indent=2, sort_keys=false) }}"
+        content: "{{ aap_export.assets | to_nice_yaml(indent=2, sort_keys=false) }}"
 
-    - name: Export related job templates
-      ansible.controller.export:
-        job_templates:
-          - "01 - Fleet Analysis"
-          - "02 - Create Snapshot"
-          - "03 - Remediate Inhibitors"
-          - "04 - Run Leapp Upgrade"
-          - "05 - Reboot Host"
-          - "06 - Post Upgrade Validation"
-          - "07 - Remove Snapshot"
-          - "08 - Rollback Snapshot"
-        controller_host: "{{ controller_host }}"
-        controller_username: "{{ controller_username }}"
-        controller_password: "{{ controller_password }}"
-        validate_certs: "{{ controller_validate_certs }}"
-      register: job_template_export
-
-    - name: Save job template export to YAML
-      ansible.builtin.copy:
-        dest: "{{ export_dir }}/rhel-upgrade-job-templates-export.yml"
-        mode: "0644"
-        content: "{{ job_template_export.assets | to_nice_yaml(indent=2, sort_keys=false) }}"
-
-    - name: Export inventories
-      ansible.controller.export:
-        inventories:
-          - "RHEL 7 Fleet"
-          - "RHEL 8 Fleet"
-          - "RHEL 9 Fleet"
-        controller_host: "{{ controller_host }}"
-        controller_username: "{{ controller_username }}"
-        controller_password: "{{ controller_password }}"
-        validate_certs: "{{ controller_validate_certs }}"
-      register: inventory_export
-
-    - name: Save inventory export to YAML
-      ansible.builtin.copy:
-        dest: "{{ export_dir }}/rhel-upgrade-inventories-export.yml"
-        mode: "0644"
-        content: "{{ inventory_export.assets | to_nice_yaml(indent=2, sort_keys=false) }}"
-
-    - name: Export projects
-      ansible.controller.export:
-        projects:
-          - "RHEL Upgrade Automation"
-        controller_host: "{{ controller_host }}"
-        controller_username: "{{ controller_username }}"
-        controller_password: "{{ controller_password }}"
-        validate_certs: "{{ controller_validate_certs }}"
-      register: project_export
-
-    - name: Save project export to YAML
-      ansible.builtin.copy:
-        dest: "{{ export_dir }}/rhel-upgrade-projects-export.yml"
-        mode: "0644"
-        content: "{{ project_export.assets | to_nice_yaml(indent=2, sort_keys=false) }}"
-
-    - name: Show export files
+    - name: Show export file
       ansible.builtin.debug:
         msg:
           - "Export completed."
-          - "{{ export_dir }}/rhel-upgrade-workflows-export.yml"
-          - "{{ export_dir }}/rhel-upgrade-job-templates-export.yml"
-          - "{{ export_dir }}/rhel-upgrade-inventories-export.yml"
-          - "{{ export_dir }}/rhel-upgrade-projects-export.yml"
+          - "{{ export_dir }}/aap-controller-full-export.yml"
