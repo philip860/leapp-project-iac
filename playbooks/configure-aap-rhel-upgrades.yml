@@ -15,12 +15,16 @@
     - ../vars/job_templates.yml
     - ../vars/workflow_job_templates.yml
 
+  vars:
+    controller_organization: "{{ controller_organization | default('Default') }}"
+
   pre_tasks:
     - name: Verify controller bootstrap variables are loaded
       ansible.builtin.debug:
         msg:
           - "controller_hostname={{ controller_hostname }}"
           - "controller_ip={{ controller_ip }}"
+          - "controller_organization={{ controller_organization }}"
 
     - name: Set AAP controller IP from inventory group or vars file
       ansible.builtin.set_fact:
@@ -91,11 +95,10 @@
         msg: "Using AAP controller endpoint: {{ controller_host }}"
 
   tasks:
-    - name: Ensure RHEL Fleet Upgrade organization exists
+    - name: Verify target AAP organization exists
       ansible.controller.organization:
-        name: "RHEL Fleet Upgrade"
-        description: "Automation for RHEL 7, 8, 9, and future RHEL 10 Leapp upgrades"
-        state: present
+        name: "{{ controller_organization }}"
+        state: exists
         controller_host: "{{ controller_host }}"
         controller_username: "{{ controller_username }}"
         controller_password: "{{ controller_password }}"
