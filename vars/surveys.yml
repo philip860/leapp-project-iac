@@ -1,0 +1,25 @@
+---
+###############################################################################
+# Shared survey definitions
+#
+# These survey specifications can be reused by any Job Template or Workflow
+# that requires the user to select the target inventory group.
+###############################################################################
+
+rhel_inventory_group_survey:
+  name: Target Host Selection
+  description: Select the host group to target.
+  spec:
+    - question_name: Select inventory group
+      question_description: >
+        Use to limit the job to hosts that are members of the selected
+        inventory group.
+      required: true
+      type: multiplechoice
+      variable: rhel_inventory_group
+      default: ALL_rhel
+      choices:
+        - ALL_rhel
+        - rhel7
+        - rhel8
+        - rhel9

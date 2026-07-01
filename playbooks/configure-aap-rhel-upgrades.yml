@@ -15,6 +15,7 @@
     - ../vars/projects.yml
     - ../vars/job_templates.yml
     - ../vars/workflow_job_templates.yml
+    - ../vars/surveys.yml
 
   vars:
     controller_organization: "{{ controller_organization | default('Default') }}"
