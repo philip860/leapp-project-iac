@@ -6,6 +6,22 @@ controller_workflows:
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
     ask_variables_on_launch: true
+    survey_enabled: true
+    survey_spec:
+      name: RHEL 7 to 8 Upgrade Survey
+      description: Select the inventory group to target.
+      spec:
+        - question_name: Select inventory group
+          question_description: Use to limit job to hosts that are members of the selected host group.
+          required: true
+          type: multiplechoice
+          variable: rhel_inventory_group
+          choices:
+            - ALL_rhel
+            - rhel7
+            - rhel8
+            - rhel9
+          default: rhel7
     workflow_nodes:
       - identifier: fleet_analysis
         unified_job_template:
@@ -96,6 +112,22 @@ controller_workflows:
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
     ask_variables_on_launch: true
+    survey_enabled: true
+    survey_spec:
+      name: RHEL 8 to 9 Upgrade Survey
+      description: Select the inventory group to target.
+      spec:
+        - question_name: Select inventory group
+          question_description: Use to limit job to hosts that are members of the selected host group.
+          required: true
+          type: multiplechoice
+          variable: rhel_inventory_group
+          choices:
+            - ALL_rhel
+            - rhel7
+            - rhel8
+            - rhel9
+          default: rhel8
     workflow_nodes:
       - identifier: fleet_analysis
         unified_job_template:
@@ -186,6 +218,22 @@ controller_workflows:
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
     ask_variables_on_launch: true
+    survey_enabled: true
+    survey_spec:
+      name: RHEL 9 to 10 Upgrade Survey
+      description: Select the inventory group to target.
+      spec:
+        - question_name: Select inventory group
+          question_description: Use to limit job to hosts that are members of the selected host group.
+          required: true
+          type: multiplechoice
+          variable: rhel_inventory_group
+          choices:
+            - ALL_rhel
+            - rhel7
+            - rhel8
+            - rhel9
+          default: rhel9
     extra_vars:
       upgrade_support_status: future
       note: RHEL 9 to RHEL 10 workflow placeholder for future Leapp support
