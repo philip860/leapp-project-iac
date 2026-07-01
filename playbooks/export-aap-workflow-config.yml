@@ -1,11 +1,8 @@
 ---
-- name: Export AAP configuration as IaC
+- name: Export AAP workflow configuration as IaC using Gateway API
   hosts: localhost
   connection: local
   gather_facts: false
-
-  collections:
-    - ansible.controller
 
   vars_files:
     - ../vars/secrets.yml
@@ -39,7 +36,6 @@
       register: aap_endpoint_checks
       failed_when: false
       changed_when: false
-      check_mode: false
 
     - name: Select first reachable AAP controller endpoint
       ansible.builtin.set_fact:
@@ -54,38 +50,85 @@
               | first
             ) | default('')
           }}
-        controller_validate_certs_resolved: "{{ controller_validate_certs | default(false) }}"
-
-    - name: Fail if no AAP controller endpoint is reachable
-      ansible.builtin.fail:
-        msg:
-          - "AAP controller is not reachable using DNS or IP."
-          - "Tried DNS: https://{{ controller_hostname }}"
-          - "Tried IP: https://{{ controller_ip }}"
-      when: controller_host is not defined or controller_host | length == 0
 
     - name: Show selected AAP controller endpoint
       ansible.builtin.debug:
         msg: "Using AAP controller endpoint: {{ controller_host }}"
 
   tasks:
-    - name: Export all AAP controller assets
-      ansible.controller.export:
-        all: true
-        controller_host: "{{ controller_host }}"
-        controller_username: "{{ controller_username }}"
-        controller_password: "{{ controller_password }}"
-        validate_certs: "{{ controller_validate_certs_resolved }}"
-      register: aap_export
+    - name: Export workflow job templates
+      ansible.builtin.uri:
+        url: "{{ controller_host }}/api/controller/v2/workflow_job_templates/?page_size=200"
+        method: GET
+        user: "{{ controller_username }}"
+        password: "{{ controller_password }}"
+        force_basic_auth: true
+        validate_certs: "{{ controller_validate_certs | default(false) }}"
+        return_content: true
+      register: workflow_export
 
-    - name: Save full AAP export to YAML
+    - name: Export job templates
+      ansible.builtin.uri:
+        url: "{{ controller_host }}/api/controller/v2/job_templates/?page_size=200"
+        method: GET
+        user: "{{ controller_username }}"
+        password: "{{ controller_password }}"
+        force_basic_auth: true
+        validate_certs: "{{ controller_validate_certs | default(false) }}"
+        return_content: true
+      register: job_template_export
+
+    - name: Export inventories
+      ansible.builtin.uri:
+        url: "{{ controller_host }}/api/controller/v2/inventories/?page_size=200"
+        method: GET
+        user: "{{ controller_username }}"
+        password: "{{ controller_password }}"
+        force_basic_auth: true
+        validate_certs: "{{ controller_validate_certs | default(false) }}"
+        return_content: true
+      register: inventory_export
+
+    - name: Export projects
+      ansible.builtin.uri:
+        url: "{{ controller_host }}/api/controller/v2/projects/?page_size=200"
+        method: GET
+        user: "{{ controller_username }}"
+        password: "{{ controller_password }}"
+        force_basic_auth: true
+        validate_certs: "{{ controller_validate_certs | default(false) }}"
+        return_content: true
+      register: project_export
+
+    - name: Save workflow export
       ansible.builtin.copy:
-        dest: "{{ export_dir }}/aap-controller-full-export.yml"
+        dest: "{{ export_dir }}/workflow_job_templates_raw.yml"
         mode: "0644"
-        content: "{{ aap_export.assets | to_nice_yaml(indent=2, sort_keys=false) }}"
+        content: "{{ workflow_export.json | to_nice_yaml(indent=2, sort_keys=false) }}"
 
-    - name: Show export file
+    - name: Save job template export
+      ansible.builtin.copy:
+        dest: "{{ export_dir }}/job_templates_raw.yml"
+        mode: "0644"
+        content: "{{ job_template_export.json | to_nice_yaml(indent=2, sort_keys=false) }}"
+
+    - name: Save inventory export
+      ansible.builtin.copy:
+        dest: "{{ export_dir }}/inventories_raw.yml"
+        mode: "0644"
+        content: "{{ inventory_export.json | to_nice_yaml(indent=2, sort_keys=false) }}"
+
+    - name: Save project export
+      ansible.builtin.copy:
+        dest: "{{ export_dir }}/projects_raw.yml"
+        mode: "0644"
+        content: "{{ project_export.json | to_nice_yaml(indent=2, sort_keys=false) }}"
+
+    - name: Show export files
       ansible.builtin.debug:
         msg:
           - "Export completed."
-          - "{{ export_dir }}/aap-controller-full-export.yml"
+          - "{{ export_dir }}/workflow_job_templates_raw.yml"
+          - "{{ export_dir }}/job_templates_raw.yml"
+          - "{{ export_dir }}/inventories_raw.yml"
+          - "{{ export_dir }}/projects_raw.yml"
