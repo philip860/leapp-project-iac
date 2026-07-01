@@ -1,7 +1,7 @@
 ---
 controller_workflows:
   - name: RHEL 7 to 8 Upgrade Workflow
-    organization: RHEL Fleet Upgrade Lab
+    organization: "{{ controller_organization | default('Default') }}"
     inventory: RHEL 7 Fleet
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
@@ -60,7 +60,7 @@ controller_workflows:
         unified_job_template: 09 - Rollback Snapshot
 
   - name: RHEL 8 to 9 Upgrade Workflow
-    organization: RHEL Fleet Upgrade Lab
+    organization: "{{ controller_organization | default('Default') }}"
     inventory: RHEL 8 Fleet
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
@@ -119,13 +119,14 @@ controller_workflows:
         unified_job_template: 09 - Rollback Snapshot
 
   - name: RHEL 9 to 10 Upgrade Workflow
-    organization: RHEL Fleet Upgrade Lab
+    organization: "{{ controller_organization | default('Default') }}"
     inventory: RHEL 9 Fleet
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
     ask_variables_on_launch: true
     extra_vars:
       upgrade_support_status: future
+      note: RHEL 9 to RHEL 10 workflow placeholder for future Leapp support
     workflow_nodes:
       - identifier: fleet_analysis
         unified_job_template: 01 - Fleet Analysis
