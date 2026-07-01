@@ -9,17 +9,19 @@
     - ansible.controller
 
   vars_files:
-    - vars/secrets.yml
-    - vars/organizations.yml
-    - vars/inventories.yml
-    - vars/hosts.yml
-    - vars/credentials.yml
-    - vars/execution_environments.yml
-    - vars/projects.yml
-    - vars/job_templates.yml
-    - vars/workflow_job_templates.yml
+    - ../vars/secrets.yml
+    - ../vars/inventories.yml
+    - ../vars/projects.yml
+    - ../vars/job_templates.yml
+    - ../vars/workflow_job_templates.yml
 
   pre_tasks:
+    - name: Verify controller bootstrap variables are loaded
+      ansible.builtin.debug:
+        msg:
+          - "controller_hostname={{ controller_hostname }}"
+          - "controller_ip={{ controller_ip }}"
+
     - name: Set AAP controller IP from inventory group or vars file
       ansible.builtin.set_fact:
         resolved_controller_ip: >-
@@ -76,13 +78,11 @@
 
     - name: Set controller connection variables
       ansible.builtin.set_fact:
-        controller_hostname_resolved: "{{ controller_host }}"
-        controller_oauthtoken: ""
-        controller_validate_certs_resolved: "{{ controller_validate_certs | default(false) }}"
         aap_hostname: "{{ controller_host }}"
         aap_username: "{{ controller_username }}"
         aap_password: "{{ controller_password }}"
         aap_validate_certs: "{{ controller_validate_certs | default(false) }}"
+        controller_oauthtoken: ""
       no_log: true
 
     - name: Show selected AAP controller endpoint
@@ -102,21 +102,9 @@
 
     - name: Configure AAP RHEL Fleet Upgrade objects
       block:
-        - name: Configure AAP credentials
-          ansible.builtin.include_role:
-            name: infra.aap_configuration.controller_credentials
-
         - name: Configure AAP inventories
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_inventories
-
-        - name: Configure AAP hosts
-          ansible.builtin.include_role:
-            name: infra.aap_configuration.controller_hosts
-
-        - name: Configure AAP execution environments
-          ansible.builtin.include_role:
-            name: infra.aap_configuration.controller_execution_environments
 
         - name: Configure AAP projects
           ansible.builtin.include_role:
