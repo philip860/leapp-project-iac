@@ -102,29 +102,72 @@
 
     - name: Configure AAP RHEL Fleet Upgrade objects
       block:
+
+        #####################################################################
+        # Credentials
+        #####################################################################
+
         - name: Configure AAP credentials
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_credentials
+
+        #####################################################################
+        # Inventories
+        #####################################################################
 
         - name: Configure AAP inventories
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_inventories
 
+        #####################################################################
+        # Hosts
+        #####################################################################
+
         - name: Configure AAP hosts
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_hosts
+
+        #####################################################################
+        # Execution Environments
+        #####################################################################
 
         - name: Configure AAP execution environments
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_execution_environments
 
+        #####################################################################
+        # Projects
+        #####################################################################
+
         - name: Configure AAP projects
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_projects
 
+        - name: Synchronize configured AAP projects
+          ansible.controller.project_update:
+            name: "{{ item.name }}"
+            wait: true
+            interval: 5
+            timeout: 300
+            controller_host: "{{ controller_host }}"
+            controller_username: "{{ controller_username }}"
+            controller_password: "{{ controller_password }}"
+            validate_certs: false
+          loop: "{{ controller_projects }}"
+          loop_control:
+            label: "{{ item.name }}"
+
+        #####################################################################
+        # Job Templates
+        #####################################################################
+
         - name: Configure AAP job templates
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_job_templates
+
+        #####################################################################
+        # Workflow Job Templates
+        #####################################################################
 
         - name: Configure AAP workflow job templates
           ansible.builtin.include_role:
@@ -135,6 +178,7 @@
         CONTROLLER_USERNAME: "{{ controller_username }}"
         CONTROLLER_PASSWORD: "{{ controller_password }}"
         CONTROLLER_VERIFY_SSL: "false"
+
         TOWER_HOST: "{{ controller_host }}"
         TOWER_USERNAME: "{{ controller_username }}"
         TOWER_PASSWORD: "{{ controller_password }}"
