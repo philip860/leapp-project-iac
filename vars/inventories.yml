@@ -18,26 +18,9 @@ controller_inventories:
 
   - name: RHEL 9 Fleet
     organization: "{{ controller_organization | default('Default') }}"
-    description: RHEL 9 hosts targeted for future RHEL 9 to RHEL 10 upgrades
+    description: RHEL 9 hosts targeted for RHEL 9 to RHEL 10 upgrades
     variables:
       source_rhel_major_version: 9
       target_rhel_major_version: 10
       leapp_upgrade_path: rhel9_to_rhel10
-
-  - name: RHEL 10 Fleet
-    organization: "{{ controller_organization | default('Default') }}"
-    description: RHEL 10 systems for post-upgrade management and validation
-    variables:
-      source_rhel_major_version: 10
-
-  - name: RHEL Upgrade Development
-    organization: "{{ controller_organization | default('Default') }}"
-    description: Development and test systems for validating Leapp upgrade workflows
-    variables:
-      upgrade_environment: development
-
-  - name: RHEL Upgrade Production
-    organization: "{{ controller_organization | default('Default') }}"
-    description: Production systems approved for controlled Leapp upgrades
-    variables:
-      upgrade_environment: production
+      upgrade_support_status: future
