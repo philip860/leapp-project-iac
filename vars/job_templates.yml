@@ -1,7 +1,7 @@
 ---
 controller_templates:
   - name: 01 - Fleet Analysis
-    organization: RHEL Fleet Upgrade Lab
+    organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/analysis.yml
@@ -13,7 +13,7 @@ controller_templates:
     ask_variables_on_launch: true
 
   - name: 02 - Create Snapshot
-    organization: RHEL Fleet Upgrade Lab
+    organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/snapshot_lvm.yml
@@ -27,7 +27,7 @@ controller_templates:
     ask_variables_on_launch: true
 
   - name: 03 - Leapp Preupgrade
-    organization: RHEL Fleet Upgrade Lab
+    organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/leapp-preupgrade.yml
@@ -40,7 +40,7 @@ controller_templates:
     ask_variables_on_launch: true
 
   - name: 04 - Remediate Inhibitors
-    organization: RHEL Fleet Upgrade Lab
+    organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/remediate-leapp-inhibitors.yml
@@ -52,7 +52,7 @@ controller_templates:
     ask_variables_on_launch: true
 
   - name: 05 - Run Leapp Upgrade
-    organization: RHEL Fleet Upgrade Lab
+    organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/leapp-upgrade.yml
@@ -65,7 +65,7 @@ controller_templates:
     ask_variables_on_launch: true
 
   - name: 06 - Reboot Host
-    organization: RHEL Fleet Upgrade Lab
+    organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/reboot.yml
@@ -76,7 +76,7 @@ controller_templates:
     ask_limit_on_launch: true
 
   - name: 07 - Post Upgrade Validation
-    organization: RHEL Fleet Upgrade Lab
+    organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/validate-upgrade.yml
@@ -88,7 +88,7 @@ controller_templates:
     ask_variables_on_launch: true
 
   - name: 08 - Remove Snapshot
-    organization: RHEL Fleet Upgrade Lab
+    organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/snapshot_lvm.yml
@@ -102,7 +102,7 @@ controller_templates:
     ask_variables_on_launch: true
 
   - name: 09 - Rollback Snapshot
-    organization: RHEL Fleet Upgrade Lab
+    organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/snapshot_lvm.yml
