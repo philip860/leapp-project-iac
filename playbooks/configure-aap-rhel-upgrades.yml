@@ -53,19 +53,20 @@
       register: aap_endpoint_checks
       failed_when: false
       changed_when: false
+      check_mode: false
 
     - name: Select first reachable AAP controller endpoint
       ansible.builtin.set_fact:
         controller_host: >-
           {{
             (
-              aap_endpoint_checks.results
+              aap_endpoint_checks.results | default([])
               | selectattr('status', 'defined')
               | selectattr('status', 'in', [200, 401, 403])
               | map(attribute='item')
               | list
               | first
-            )
+            ) | default('')
           }}
 
     - name: Fail if no AAP controller endpoint is reachable
@@ -137,7 +138,6 @@
         CONTROLLER_USERNAME: "{{ controller_username }}"
         CONTROLLER_PASSWORD: "{{ controller_password }}"
         CONTROLLER_VERIFY_SSL: "{{ controller_validate_certs | default(false) | string | lower }}"
-
         TOWER_HOST: "{{ controller_host }}"
         TOWER_USERNAME: "{{ controller_username }}"
         TOWER_PASSWORD: "{{ controller_password }}"
