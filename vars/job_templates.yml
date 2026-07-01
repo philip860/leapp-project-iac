@@ -5,7 +5,7 @@ controller_templates:
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/analysis.yml
-    execution_environment: RHEL Upgrade EE
+    execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
     ask_inventory_on_launch: true
@@ -17,7 +17,7 @@ controller_templates:
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/snapshot_lvm.yml
-    execution_environment: RHEL Upgrade EE
+    execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
     extra_vars:
@@ -31,7 +31,7 @@ controller_templates:
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/leapp-preupgrade.yml
-    execution_environment: RHEL Upgrade EE
+    execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
       - Red Hat Subscription Credential
@@ -44,7 +44,7 @@ controller_templates:
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/remediate-leapp-inhibitors.yml
-    execution_environment: RHEL Upgrade EE
+    execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
     ask_inventory_on_launch: true
@@ -56,7 +56,7 @@ controller_templates:
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/leapp-upgrade.yml
-    execution_environment: RHEL Upgrade EE
+    execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
       - Red Hat Subscription Credential
@@ -69,7 +69,7 @@ controller_templates:
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/reboot.yml
-    execution_environment: RHEL Upgrade EE
+    execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
     ask_inventory_on_launch: true
@@ -80,7 +80,7 @@ controller_templates:
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/validate-upgrade.yml
-    execution_environment: RHEL Upgrade EE
+    execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
     ask_inventory_on_launch: true
@@ -92,7 +92,7 @@ controller_templates:
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/snapshot_lvm.yml
-    execution_environment: RHEL Upgrade EE
+    execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
     extra_vars:
@@ -106,7 +106,7 @@ controller_templates:
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
     playbook: playbooks/snapshot_lvm.yml
-    execution_environment: RHEL Upgrade EE
+    execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
     extra_vars:
