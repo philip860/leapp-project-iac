@@ -8,56 +8,96 @@ controller_workflows:
     ask_variables_on_launch: true
     workflow_nodes:
       - identifier: fleet_analysis
-        unified_job_template: 01 - Fleet Analysis
+        unified_job_template:
+          name: 01 - Fleet Analysis
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: create_snapshot
 
       - identifier: create_snapshot
-        unified_job_template: 02 - Create Snapshot
+        unified_job_template:
+          name: 02 - Create Snapshot
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: leapp_preupgrade
 
       - identifier: leapp_preupgrade
-        unified_job_template: 03 - Leapp Preupgrade
+        unified_job_template:
+          name: 03 - Leapp Preupgrade
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: remediate_inhibitors
 
       - identifier: remediate_inhibitors
-        unified_job_template: 04 - Remediate Inhibitors
+        unified_job_template:
+          name: 04 - Remediate Inhibitors
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: leapp_preupgrade_after_remediation
 
       - identifier: leapp_preupgrade_after_remediation
-        unified_job_template: 03 - Leapp Preupgrade
+        unified_job_template:
+          name: 03 - Leapp Preupgrade
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: run_leapp_upgrade
 
       - identifier: run_leapp_upgrade
-        unified_job_template: 05 - Run Leapp Upgrade
+        unified_job_template:
+          name: 05 - Run Leapp Upgrade
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: reboot_host
         failure_nodes:
           - identifier: rollback_snapshot
 
       - identifier: reboot_host
-        unified_job_template: 06 - Reboot Host
+        unified_job_template:
+          name: 06 - Reboot Host
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: post_upgrade_validation
         failure_nodes:
           - identifier: rollback_snapshot
 
       - identifier: post_upgrade_validation
-        unified_job_template: 07 - Post Upgrade Validation
+        unified_job_template:
+          name: 07 - Post Upgrade Validation
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: remove_snapshot
         failure_nodes:
           - identifier: rollback_snapshot
 
       - identifier: remove_snapshot
-        unified_job_template: 08 - Remove Snapshot
+        unified_job_template:
+          name: 08 - Remove Snapshot
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
 
       - identifier: rollback_snapshot
-        unified_job_template: 09 - Rollback Snapshot
+        unified_job_template:
+          name: 09 - Rollback Snapshot
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
 
   - name: RHEL 8 to 9 Upgrade Workflow
     organization: "{{ controller_organization | default('Default') }}"
@@ -67,56 +107,96 @@ controller_workflows:
     ask_variables_on_launch: true
     workflow_nodes:
       - identifier: fleet_analysis
-        unified_job_template: 01 - Fleet Analysis
+        unified_job_template:
+          name: 01 - Fleet Analysis
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: create_snapshot
 
       - identifier: create_snapshot
-        unified_job_template: 02 - Create Snapshot
+        unified_job_template:
+          name: 02 - Create Snapshot
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: leapp_preupgrade
 
       - identifier: leapp_preupgrade
-        unified_job_template: 03 - Leapp Preupgrade
+        unified_job_template:
+          name: 03 - Leapp Preupgrade
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: remediate_inhibitors
 
       - identifier: remediate_inhibitors
-        unified_job_template: 04 - Remediate Inhibitors
+        unified_job_template:
+          name: 04 - Remediate Inhibitors
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: leapp_preupgrade_after_remediation
 
       - identifier: leapp_preupgrade_after_remediation
-        unified_job_template: 03 - Leapp Preupgrade
+        unified_job_template:
+          name: 03 - Leapp Preupgrade
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: run_leapp_upgrade
 
       - identifier: run_leapp_upgrade
-        unified_job_template: 05 - Run Leapp Upgrade
+        unified_job_template:
+          name: 05 - Run Leapp Upgrade
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: reboot_host
         failure_nodes:
           - identifier: rollback_snapshot
 
       - identifier: reboot_host
-        unified_job_template: 06 - Reboot Host
+        unified_job_template:
+          name: 06 - Reboot Host
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: post_upgrade_validation
         failure_nodes:
           - identifier: rollback_snapshot
 
       - identifier: post_upgrade_validation
-        unified_job_template: 07 - Post Upgrade Validation
+        unified_job_template:
+          name: 07 - Post Upgrade Validation
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
         success_nodes:
           - identifier: remove_snapshot
         failure_nodes:
           - identifier: rollback_snapshot
 
       - identifier: remove_snapshot
-        unified_job_template: 08 - Remove Snapshot
+        unified_job_template:
+          name: 08 - Remove Snapshot
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
 
       - identifier: rollback_snapshot
-        unified_job_template: 09 - Rollback Snapshot
+        unified_job_template:
+          name: 09 - Rollback Snapshot
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
 
   - name: RHEL 9 to 10 Upgrade Workflow
     organization: "{{ controller_organization | default('Default') }}"
@@ -129,4 +209,8 @@ controller_workflows:
       note: RHEL 9 to RHEL 10 workflow placeholder for future Leapp support
     workflow_nodes:
       - identifier: fleet_analysis
-        unified_job_template: 01 - Fleet Analysis
+        unified_job_template:
+          name: 01 - Fleet Analysis
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
