@@ -54,7 +54,7 @@ controller_templates:
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
-    playbook: playbooks/leapp-upgrade.yml
+    playbook: upgrade.yml
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
