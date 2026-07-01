@@ -51,6 +51,14 @@
             ) | default('')
           }}
 
+    - name: Fail if no AAP controller endpoint is reachable
+      ansible.builtin.fail:
+        msg:
+          - "AAP controller is not reachable using DNS or IP."
+          - "Tried DNS: https://{{ controller_hostname }}"
+          - "Tried IP: https://{{ controller_ip }}"
+      when: controller_host is not defined or controller_host | length == 0
+
     - name: Show selected AAP controller endpoint
       ansible.builtin.debug:
         msg: "Using AAP controller endpoint: {{ controller_host }}"
@@ -66,6 +74,34 @@
         validate_certs: "{{ controller_validate_certs | default(false) }}"
         return_content: true
       register: workflow_export
+
+    - name: Export workflow nodes for each workflow
+      ansible.builtin.uri:
+        url: "{{ controller_host }}{{ item.related.workflow_nodes }}?page_size=200"
+        method: GET
+        user: "{{ controller_username }}"
+        password: "{{ controller_password }}"
+        force_basic_auth: true
+        validate_certs: "{{ controller_validate_certs | default(false) }}"
+        return_content: true
+      loop: "{{ workflow_export.json.results | default([]) }}"
+      loop_control:
+        label: "{{ item.name }}"
+      register: workflow_nodes_export
+
+    - name: Export workflow survey spec for each workflow
+      ansible.builtin.uri:
+        url: "{{ controller_host }}{{ item.related.survey_spec }}"
+        method: GET
+        user: "{{ controller_username }}"
+        password: "{{ controller_password }}"
+        force_basic_auth: true
+        validate_certs: "{{ controller_validate_certs | default(false) }}"
+        return_content: true
+      loop: "{{ workflow_export.json.results | default([]) }}"
+      loop_control:
+        label: "{{ item.name }}"
+      register: workflow_survey_export
 
     - name: Export job templates
       ansible.builtin.uri:
@@ -100,11 +136,34 @@
         return_content: true
       register: project_export
 
-    - name: Save workflow export
+    - name: Export credentials metadata
+      ansible.builtin.uri:
+        url: "{{ controller_host }}/api/controller/v2/credentials/?page_size=200"
+        method: GET
+        user: "{{ controller_username }}"
+        password: "{{ controller_password }}"
+        force_basic_auth: true
+        validate_certs: "{{ controller_validate_certs | default(false) }}"
+        return_content: true
+      register: credential_export
+
+    - name: Save workflow job templates export
       ansible.builtin.copy:
         dest: "{{ export_dir }}/workflow_job_templates_raw.yml"
         mode: "0644"
         content: "{{ workflow_export.json | to_nice_yaml(indent=2, sort_keys=false) }}"
+
+    - name: Save workflow nodes export
+      ansible.builtin.copy:
+        dest: "{{ export_dir }}/workflow_nodes_raw.yml"
+        mode: "0644"
+        content: "{{ workflow_nodes_export.results | default([]) | to_nice_yaml(indent=2, sort_keys=false) }}"
+
+    - name: Save workflow surveys export
+      ansible.builtin.copy:
+        dest: "{{ export_dir }}/workflow_surveys_raw.yml"
+        mode: "0644"
+        content: "{{ workflow_survey_export.results | default([]) | to_nice_yaml(indent=2, sort_keys=false) }}"
 
     - name: Save job template export
       ansible.builtin.copy:
@@ -124,11 +183,20 @@
         mode: "0644"
         content: "{{ project_export.json | to_nice_yaml(indent=2, sort_keys=false) }}"
 
+    - name: Save credentials metadata export
+      ansible.builtin.copy:
+        dest: "{{ export_dir }}/credentials_raw.yml"
+        mode: "0644"
+        content: "{{ credential_export.json | to_nice_yaml(indent=2, sort_keys=false) }}"
+
     - name: Show export files
       ansible.builtin.debug:
         msg:
           - "Export completed."
           - "{{ export_dir }}/workflow_job_templates_raw.yml"
+          - "{{ export_dir }}/workflow_nodes_raw.yml"
+          - "{{ export_dir }}/workflow_surveys_raw.yml"
           - "{{ export_dir }}/job_templates_raw.yml"
           - "{{ export_dir }}/inventories_raw.yml"
           - "{{ export_dir }}/projects_raw.yml"
+          - "{{ export_dir }}/credentials_raw.yml"
