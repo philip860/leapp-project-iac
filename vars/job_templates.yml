@@ -1,0 +1,116 @@
+---
+controller_templates:
+  - name: 01 - Fleet Analysis
+    organization: RHEL Fleet Upgrade Lab
+    project: RHEL Upgrade Automation
+    inventory: RHEL Upgrade Development
+    playbook: playbooks/analysis.yml
+    execution_environment: RHEL Upgrade EE
+    credentials:
+      - RHEL Machine Credential
+    ask_inventory_on_launch: true
+    ask_limit_on_launch: true
+    ask_variables_on_launch: true
+
+  - name: 02 - Create Snapshot
+    organization: RHEL Fleet Upgrade Lab
+    project: RHEL Upgrade Automation
+    inventory: RHEL Upgrade Development
+    playbook: playbooks/snapshot_lvm.yml
+    execution_environment: RHEL Upgrade EE
+    credentials:
+      - RHEL Machine Credential
+    extra_vars:
+      lvm_snapshots_action: create
+    ask_inventory_on_launch: true
+    ask_limit_on_launch: true
+    ask_variables_on_launch: true
+
+  - name: 03 - Leapp Preupgrade
+    organization: RHEL Fleet Upgrade Lab
+    project: RHEL Upgrade Automation
+    inventory: RHEL Upgrade Development
+    playbook: playbooks/leapp-preupgrade.yml
+    execution_environment: RHEL Upgrade EE
+    credentials:
+      - RHEL Machine Credential
+      - Red Hat Subscription Credential
+    ask_inventory_on_launch: true
+    ask_limit_on_launch: true
+    ask_variables_on_launch: true
+
+  - name: 04 - Remediate Inhibitors
+    organization: RHEL Fleet Upgrade Lab
+    project: RHEL Upgrade Automation
+    inventory: RHEL Upgrade Development
+    playbook: playbooks/remediate-leapp-inhibitors.yml
+    execution_environment: RHEL Upgrade EE
+    credentials:
+      - RHEL Machine Credential
+    ask_inventory_on_launch: true
+    ask_limit_on_launch: true
+    ask_variables_on_launch: true
+
+  - name: 05 - Run Leapp Upgrade
+    organization: RHEL Fleet Upgrade Lab
+    project: RHEL Upgrade Automation
+    inventory: RHEL Upgrade Development
+    playbook: playbooks/leapp-upgrade.yml
+    execution_environment: RHEL Upgrade EE
+    credentials:
+      - RHEL Machine Credential
+      - Red Hat Subscription Credential
+    ask_inventory_on_launch: true
+    ask_limit_on_launch: true
+    ask_variables_on_launch: true
+
+  - name: 06 - Reboot Host
+    organization: RHEL Fleet Upgrade Lab
+    project: RHEL Upgrade Automation
+    inventory: RHEL Upgrade Development
+    playbook: playbooks/reboot.yml
+    execution_environment: RHEL Upgrade EE
+    credentials:
+      - RHEL Machine Credential
+    ask_inventory_on_launch: true
+    ask_limit_on_launch: true
+
+  - name: 07 - Post Upgrade Validation
+    organization: RHEL Fleet Upgrade Lab
+    project: RHEL Upgrade Automation
+    inventory: RHEL Upgrade Development
+    playbook: playbooks/validate-upgrade.yml
+    execution_environment: RHEL Upgrade EE
+    credentials:
+      - RHEL Machine Credential
+    ask_inventory_on_launch: true
+    ask_limit_on_launch: true
+    ask_variables_on_launch: true
+
+  - name: 08 - Remove Snapshot
+    organization: RHEL Fleet Upgrade Lab
+    project: RHEL Upgrade Automation
+    inventory: RHEL Upgrade Development
+    playbook: playbooks/snapshot_lvm.yml
+    execution_environment: RHEL Upgrade EE
+    credentials:
+      - RHEL Machine Credential
+    extra_vars:
+      lvm_snapshots_action: remove
+    ask_inventory_on_launch: true
+    ask_limit_on_launch: true
+    ask_variables_on_launch: true
+
+  - name: 09 - Rollback Snapshot
+    organization: RHEL Fleet Upgrade Lab
+    project: RHEL Upgrade Automation
+    inventory: RHEL Upgrade Development
+    playbook: playbooks/snapshot_lvm.yml
+    execution_environment: RHEL Upgrade EE
+    credentials:
+      - RHEL Machine Credential
+    extra_vars:
+      lvm_snapshots_action: revert
+    ask_inventory_on_launch: true
+    ask_limit_on_launch: true
+    ask_variables_on_launch: true

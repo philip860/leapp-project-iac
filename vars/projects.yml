@@ -1,0 +1,13 @@
+---
+controller_projects:
+  - name: RHEL Upgrade Automation
+    organization: RHEL Fleet Upgrade Lab
+    description: RHEL Leapp upgrade automation project
+    scm_type: git
+    scm_url: https://github.com/philip860/leapp-project.git
+    scm_branch: fix-error-in-upgrade-process
+    scm_clean: true
+    scm_delete_on_update: true
+    scm_update_on_launch: true
+    wait: true
+    update_project: true

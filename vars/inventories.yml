@@ -1,0 +1,43 @@
+---
+controller_inventories:
+  - name: RHEL 7 Fleet
+    organization: RHEL Fleet Upgrade Lab
+    description: RHEL 7 hosts targeted for RHEL 7 to RHEL 8 upgrades
+    variables:
+      source_rhel_major_version: 7
+      target_rhel_major_version: 8
+      leapp_upgrade_path: rhel7_to_rhel8
+
+  - name: RHEL 8 Fleet
+    organization: RHEL Fleet Upgrade Lab
+    description: RHEL 8 hosts targeted for RHEL 8 to RHEL 9 upgrades
+    variables:
+      source_rhel_major_version: 8
+      target_rhel_major_version: 9
+      leapp_upgrade_path: rhel8_to_rhel9
+
+  - name: RHEL 9 Fleet
+    organization: RHEL Fleet Upgrade Lab
+    description: RHEL 9 hosts targeted for future RHEL 9 to RHEL 10 upgrades
+    variables:
+      source_rhel_major_version: 9
+      target_rhel_major_version: 10
+      leapp_upgrade_path: rhel9_to_rhel10
+
+  - name: RHEL 10 Fleet
+    organization: RHEL Fleet Upgrade Lab
+    description: RHEL 10 post-upgrade validation inventory
+    variables:
+      source_rhel_major_version: 10
+
+  - name: RHEL Upgrade Development
+    organization: RHEL Fleet Upgrade Lab
+    description: Development and lab systems for testing Leapp workflows
+    variables:
+      upgrade_environment: development
+
+  - name: RHEL Upgrade Production
+    organization: RHEL Fleet Upgrade Lab
+    description: Production systems approved for controlled Leapp upgrades
+    variables:
+      upgrade_environment: production
