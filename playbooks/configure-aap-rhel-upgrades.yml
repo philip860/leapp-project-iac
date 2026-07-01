@@ -22,12 +22,12 @@
   pre_tasks:
     - name: Set AAP controller IP from inventory group or vars file
       ansible.builtin.set_fact:
-        resolved_aap_controller_ip: >-
+        resolved_controller_ip: >-
           {{
             (
               groups['aap_server'][0]
               if groups['aap_server'] is defined and groups['aap_server'] | length > 0
-              else aap_controller_ip
+              else controller_ip
             )
             | regex_replace('^_', '')
           }}
@@ -35,13 +35,13 @@
     - name: Build preferred AAP controller endpoint list
       ansible.builtin.set_fact:
         aap_controller_endpoint_candidates:
-          - "https://{{ aap_fqdn }}"
-          - "https://{{ resolved_aap_controller_ip }}"
+          - "https://{{ controller_hostname }}"
+          - "https://{{ resolved_controller_ip }}"
 
     - name: Check available AAP controller endpoints
       ansible.builtin.uri:
         url: "{{ item }}/api/gateway/v1/status/"
-        validate_certs: false
+        validate_certs: "{{ controller_validate_certs | default(false) }}"
         status_code:
           - 200
           - 401
@@ -70,19 +70,19 @@
       ansible.builtin.fail:
         msg:
           - "AAP controller is not reachable using DNS or IP."
-          - "Tried DNS: https://{{ aap_fqdn }}"
-          - "Tried IP: https://{{ resolved_aap_controller_ip }}"
+          - "Tried DNS: https://{{ controller_hostname }}"
+          - "Tried IP: https://{{ resolved_controller_ip }}"
       when: controller_host is not defined or controller_host | length == 0
 
     - name: Set controller connection variables
       ansible.builtin.set_fact:
-        controller_hostname: "{{ controller_host }}"
+        controller_hostname_resolved: "{{ controller_host }}"
         controller_oauthtoken: ""
-        controller_validate_certs: false
+        controller_validate_certs_resolved: "{{ controller_validate_certs | default(false) }}"
         aap_hostname: "{{ controller_host }}"
         aap_username: "{{ controller_username }}"
         aap_password: "{{ controller_password }}"
-        aap_validate_certs: false
+        aap_validate_certs: "{{ controller_validate_certs | default(false) }}"
       no_log: true
 
     - name: Show selected AAP controller endpoint
@@ -92,52 +92,31 @@
   tasks:
     - name: Ensure RHEL Fleet Upgrade organization exists
       ansible.controller.organization:
-        name: "RHEL Fleet Upgrade Lab"
+        name: "RHEL Fleet Upgrade"
         description: "Automation for RHEL 7, 8, 9, and future RHEL 10 Leapp upgrades"
         state: present
         controller_host: "{{ controller_host }}"
         controller_username: "{{ controller_username }}"
         controller_password: "{{ controller_password }}"
-        validate_certs: false
+        validate_certs: "{{ controller_validate_certs | default(false) }}"
 
     - name: Configure AAP RHEL Fleet Upgrade objects
       block:
-
-        #####################################################################
-        # Credentials
-        #####################################################################
-
         - name: Configure AAP credentials
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_credentials
-
-        #####################################################################
-        # Inventories
-        #####################################################################
 
         - name: Configure AAP inventories
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_inventories
 
-        #####################################################################
-        # Hosts
-        #####################################################################
-
         - name: Configure AAP hosts
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_hosts
 
-        #####################################################################
-        # Execution Environments
-        #####################################################################
-
         - name: Configure AAP execution environments
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_execution_environments
-
-        #####################################################################
-        # Projects
-        #####################################################################
 
         - name: Configure AAP projects
           ansible.builtin.include_role:
@@ -152,22 +131,14 @@
             controller_host: "{{ controller_host }}"
             controller_username: "{{ controller_username }}"
             controller_password: "{{ controller_password }}"
-            validate_certs: false
+            validate_certs: "{{ controller_validate_certs | default(false) }}"
           loop: "{{ controller_projects }}"
           loop_control:
             label: "{{ item.name }}"
 
-        #####################################################################
-        # Job Templates
-        #####################################################################
-
         - name: Configure AAP job templates
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_job_templates
-
-        #####################################################################
-        # Workflow Job Templates
-        #####################################################################
 
         - name: Configure AAP workflow job templates
           ansible.builtin.include_role:
@@ -177,9 +148,9 @@
         CONTROLLER_HOST: "{{ controller_host }}"
         CONTROLLER_USERNAME: "{{ controller_username }}"
         CONTROLLER_PASSWORD: "{{ controller_password }}"
-        CONTROLLER_VERIFY_SSL: "false"
+        CONTROLLER_VERIFY_SSL: "{{ controller_validate_certs | default(false) | string | lower }}"
 
         TOWER_HOST: "{{ controller_host }}"
         TOWER_USERNAME: "{{ controller_username }}"
         TOWER_PASSWORD: "{{ controller_password }}"
-        TOWER_VERIFY_SSL: "false"
+        TOWER_VERIFY_SSL: "{{ controller_validate_certs | default(false) | string | lower }}"
