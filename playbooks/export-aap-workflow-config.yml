@@ -20,10 +20,53 @@
         state: directory
         mode: "0755"
 
-    - name: Set controller connection variables
+    - name: Build preferred AAP controller endpoint list
       ansible.builtin.set_fact:
-        controller_host: "https://{{ controller_hostname }}"
-        controller_validate_certs: "{{ controller_validate_certs | default(false) }}"
+        aap_controller_endpoint_candidates:
+          - "https://{{ controller_hostname }}"
+          - "https://{{ controller_ip }}"
+
+    - name: Check available AAP controller endpoints
+      ansible.builtin.uri:
+        url: "{{ item }}/api/gateway/v1/status/"
+        validate_certs: "{{ controller_validate_certs | default(false) }}"
+        status_code:
+          - 200
+          - 401
+          - 403
+        timeout: 10
+      loop: "{{ aap_controller_endpoint_candidates }}"
+      register: aap_endpoint_checks
+      failed_when: false
+      changed_when: false
+      check_mode: false
+
+    - name: Select first reachable AAP controller endpoint
+      ansible.builtin.set_fact:
+        controller_host: >-
+          {{
+            (
+              aap_endpoint_checks.results | default([])
+              | selectattr('status', 'defined')
+              | selectattr('status', 'in', [200, 401, 403])
+              | map(attribute='item')
+              | list
+              | first
+            ) | default('')
+          }}
+        controller_validate_certs_resolved: "{{ controller_validate_certs | default(false) }}"
+
+    - name: Fail if no AAP controller endpoint is reachable
+      ansible.builtin.fail:
+        msg:
+          - "AAP controller is not reachable using DNS or IP."
+          - "Tried DNS: https://{{ controller_hostname }}"
+          - "Tried IP: https://{{ controller_ip }}"
+      when: controller_host is not defined or controller_host | length == 0
+
+    - name: Show selected AAP controller endpoint
+      ansible.builtin.debug:
+        msg: "Using AAP controller endpoint: {{ controller_host }}"
 
   tasks:
     - name: Export all AAP controller assets
@@ -32,7 +75,7 @@
         controller_host: "{{ controller_host }}"
         controller_username: "{{ controller_username }}"
         controller_password: "{{ controller_password }}"
-        validate_certs: "{{ controller_validate_certs }}"
+        validate_certs: "{{ controller_validate_certs_resolved }}"
       register: aap_export
 
     - name: Save full AAP export to YAML
