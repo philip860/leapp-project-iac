@@ -4,7 +4,7 @@ controller_templates:
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
-    playbook: playbooks/analysis.yml
+    playbook: analysis.yml
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
@@ -16,7 +16,7 @@ controller_templates:
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
-    playbook: playbooks/snapshot_lvm.yml
+    playbook: snapshot_lvm.yml
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
