@@ -11,6 +11,22 @@ controller_templates:
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
     ask_variables_on_launch: true
+    survey_enabled: true
+    survey_spec:
+      name: Fleet Analysis Survey
+      description: Select the inventory group to target.
+      spec:
+        - question_name: Select inventory group
+          question_description: Use to limit job to hosts that are members of the selected host group.
+          required: true
+          type: multiplechoice
+          variable: rhel_inventory_group
+          choices:
+            - ALL_rhel
+            - rhel7
+            - rhel8
+            - rhel9
+          default: ALL_rhel
 
   - name: 02 - Create Snapshot
     organization: "{{ controller_organization | default('Default') }}"
@@ -49,6 +65,22 @@ controller_templates:
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
     ask_variables_on_launch: true
+    survey_enabled: true
+    survey_spec:
+      name: Leapp Upgrade Survey
+      description: Select the inventory group to target.
+      spec:
+        - question_name: Select inventory group
+          question_description: Use to limit job to hosts that are members of the selected host group.
+          required: true
+          type: multiplechoice
+          variable: rhel_inventory_group
+          choices:
+            - ALL_rhel
+            - rhel7
+            - rhel8
+            - rhel9
+          default: ALL_rhel
 
   - name: 05 - Reboot Host
     organization: "{{ controller_organization | default('Default') }}"
