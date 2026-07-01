@@ -26,19 +26,7 @@ controller_templates:
     ask_limit_on_launch: true
     ask_variables_on_launch: true
 
-  - name: 03 - Leapp Preupgrade
-    organization: "{{ controller_organization | default('Default') }}"
-    project: RHEL Upgrade Automation
-    inventory: RHEL Upgrade Development
-    playbook: playbooks/leapp-preupgrade.yml
-    execution_environment: "{{ controller_execution_environment | default(omit) }}"
-    credentials:
-      - RHEL Machine Credential
-    ask_inventory_on_launch: true
-    ask_limit_on_launch: true
-    ask_variables_on_launch: true
-
-  - name: 04 - Remediate Inhibitors
+  - name: 03 - Remediate Inhibitors
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
@@ -50,7 +38,7 @@ controller_templates:
     ask_limit_on_launch: true
     ask_variables_on_launch: true
 
-  - name: 05 - Run Leapp Upgrade
+  - name: 04 - Run Leapp Upgrade
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
@@ -62,22 +50,22 @@ controller_templates:
     ask_limit_on_launch: true
     ask_variables_on_launch: true
 
-  - name: 06 - Reboot Host
+  - name: 05 - Reboot Host
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
-    playbook: playbooks/reboot.yml
+    playbook: reboot.yml
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
 
-  - name: 07 - Post Upgrade Validation
+  - name: 06 - Post Upgrade Validation
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
-    playbook: playbooks/validate-upgrade.yml
+    playbook: validate.yml
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
@@ -85,7 +73,7 @@ controller_templates:
     ask_limit_on_launch: true
     ask_variables_on_launch: true
 
-  - name: 08 - Remove Snapshot
+  - name: 07 - Remove Snapshot
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development
@@ -99,7 +87,7 @@ controller_templates:
     ask_limit_on_launch: true
     ask_variables_on_launch: true
 
-  - name: 09 - Rollback Snapshot
+  - name: 08 - Rollback Snapshot
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Development

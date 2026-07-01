@@ -23,29 +23,20 @@ controller_workflows:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
         success_nodes:
-          - identifier: leapp_preupgrade
-
-      - identifier: leapp_preupgrade
-        unified_job_template:
-          name: 03 - Leapp Preupgrade
-          organization:
-            name: "{{ controller_organization | default('Default') }}"
-          type: job_template
-        success_nodes:
           - identifier: remediate_inhibitors
 
       - identifier: remediate_inhibitors
         unified_job_template:
-          name: 04 - Remediate Inhibitors
+          name: 03 - Remediate Inhibitors
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
         success_nodes:
-          - identifier: leapp_preupgrade_after_remediation
+          - identifier: post_remediation_analysis
 
-      - identifier: leapp_preupgrade_after_remediation
+      - identifier: post_remediation_analysis
         unified_job_template:
-          name: 03 - Leapp Preupgrade
+          name: 01 - Fleet Analysis
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
@@ -54,7 +45,7 @@ controller_workflows:
 
       - identifier: run_leapp_upgrade
         unified_job_template:
-          name: 05 - Run Leapp Upgrade
+          name: 04 - Run Leapp Upgrade
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
@@ -65,7 +56,7 @@ controller_workflows:
 
       - identifier: reboot_host
         unified_job_template:
-          name: 06 - Reboot Host
+          name: 05 - Reboot Host
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
@@ -76,7 +67,7 @@ controller_workflows:
 
       - identifier: post_upgrade_validation
         unified_job_template:
-          name: 07 - Post Upgrade Validation
+          name: 06 - Post Upgrade Validation
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
@@ -87,14 +78,14 @@ controller_workflows:
 
       - identifier: remove_snapshot
         unified_job_template:
-          name: 08 - Remove Snapshot
+          name: 07 - Remove Snapshot
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
 
       - identifier: rollback_snapshot
         unified_job_template:
-          name: 09 - Rollback Snapshot
+          name: 08 - Rollback Snapshot
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
@@ -122,29 +113,20 @@ controller_workflows:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
         success_nodes:
-          - identifier: leapp_preupgrade
-
-      - identifier: leapp_preupgrade
-        unified_job_template:
-          name: 03 - Leapp Preupgrade
-          organization:
-            name: "{{ controller_organization | default('Default') }}"
-          type: job_template
-        success_nodes:
           - identifier: remediate_inhibitors
 
       - identifier: remediate_inhibitors
         unified_job_template:
-          name: 04 - Remediate Inhibitors
+          name: 03 - Remediate Inhibitors
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
         success_nodes:
-          - identifier: leapp_preupgrade_after_remediation
+          - identifier: post_remediation_analysis
 
-      - identifier: leapp_preupgrade_after_remediation
+      - identifier: post_remediation_analysis
         unified_job_template:
-          name: 03 - Leapp Preupgrade
+          name: 01 - Fleet Analysis
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
@@ -153,7 +135,7 @@ controller_workflows:
 
       - identifier: run_leapp_upgrade
         unified_job_template:
-          name: 05 - Run Leapp Upgrade
+          name: 04 - Run Leapp Upgrade
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
@@ -164,7 +146,7 @@ controller_workflows:
 
       - identifier: reboot_host
         unified_job_template:
-          name: 06 - Reboot Host
+          name: 05 - Reboot Host
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
@@ -175,7 +157,7 @@ controller_workflows:
 
       - identifier: post_upgrade_validation
         unified_job_template:
-          name: 07 - Post Upgrade Validation
+          name: 06 - Post Upgrade Validation
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
@@ -186,14 +168,14 @@ controller_workflows:
 
       - identifier: remove_snapshot
         unified_job_template:
-          name: 08 - Remove Snapshot
+          name: 07 - Remove Snapshot
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
 
       - identifier: rollback_snapshot
         unified_job_template:
-          name: 09 - Rollback Snapshot
+          name: 08 - Rollback Snapshot
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
