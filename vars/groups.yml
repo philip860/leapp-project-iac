@@ -1,0 +1,28 @@
+---
+controller_groups:
+  - name: ALL_rhel
+    inventory: RHEL Upgrade Automation
+    variables:
+      upgrade_scope: all_rhel
+
+  - name: rhel7
+    inventory: RHEL Upgrade Automation
+    variables:
+      source_rhel_major_version: 7
+      target_rhel_major_version: 8
+      leapp_upgrade_path: rhel7_to_rhel8
+
+  - name: rhel8
+    inventory: RHEL Upgrade Automation
+    variables:
+      source_rhel_major_version: 8
+      target_rhel_major_version: 9
+      leapp_upgrade_path: rhel8_to_rhel9
+
+  - name: rhel9
+    inventory: RHEL Upgrade Automation
+    variables:
+      source_rhel_major_version: 9
+      target_rhel_major_version: 10
+      leapp_upgrade_path: rhel9_to_rhel10
+      upgrade_support_status: future
