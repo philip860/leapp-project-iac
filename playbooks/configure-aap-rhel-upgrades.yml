@@ -112,7 +112,11 @@
         - name: Configure AAP inventories
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_inventories
-
+        
+        - name: Configure AAP inventory groups
+          ansible.builtin.include_role:
+            name: infra.aap_configuration.controller_groups
+        
         - name: Configure AAP credentials
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_credentials
