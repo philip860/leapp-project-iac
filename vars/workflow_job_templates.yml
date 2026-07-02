@@ -101,7 +101,7 @@ controller_workflows:
 
   - name: RHEL 8 to 9 Upgrade Workflow
     organization: "{{ controller_organization | default('Default') }}"
-    inventory: RHEL 8 Fleet
+    inventory: RHEL Upgrade Automation
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
     ask_variables_on_launch: true
@@ -200,7 +200,7 @@ controller_workflows:
 
   - name: RHEL 9 to 10 Upgrade Workflow
     organization: "{{ controller_organization | default('Default') }}"
-    inventory: RHEL 9 Fleet
+    inventory: RHEL Upgrade Automation
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
     ask_variables_on_launch: true
