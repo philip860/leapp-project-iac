@@ -1,39 +1,44 @@
+
 # RHEL Fleet Upgrade Automation for Ansible Automation Platform
 
 ## Overview
 
-This repository bootstraps an existing Ansible Automation Platform (AAP)
-Controller with all of the objects required to automate Red Hat
-Enterprise Linux major version upgrades using Leapp.
+This repository bootstraps an existing Ansible Automation Platform (AAP) Controller with all of the objects required to automate Red Hat Enterprise Linux (RHEL) major version upgrades using Leapp.
 
-The bootstrap configures:
+The bootstrap playbook configures:
 
--   Organizations (or an existing organization)
--   Inventories
--   Credentials
--   Projects
--   Execution Environments (optional)
--   Job Templates
--   Workflow Job Templates
+- Inventory
+- Inventory Groups
+- Credentials
+- Projects
+- Job Templates
+- Workflow Job Templates
+- Workflow Surveys
+- Optional Execution Environment assignment
 
-The actual upgrade playbooks are **not** embedded in this repository.
-They are pulled from a Git project configured in AAP.
+The upgrade playbooks themselves are maintained in the Git repository configured as the AAP Project and are synchronized automatically before Job Templates are created.
 
-------------------------------------------------------------------------
+---
 
-# Overall Process
+# Overall Bootstrap Process
 
-``` text
+```text
 Bootstrap Playbook
         │
         ▼
-Connect to AAP Controller
+Locate Reachable AAP Controller
+        │
+        ▼
+Authenticate
         │
         ▼
 Verify Organization Exists
         │
         ▼
-Create Inventories
+Create Inventory
+        │
+        ▼
+Create Inventory Groups
         │
         ▼
 Create Credentials
@@ -51,174 +56,187 @@ Create Job Templates
 Create Workflow Job Templates
         │
         ▼
-Controller Ready
+AAP Ready
 ```
 
-After bootstrapping, operators launch one of the workflows from the AAP
-UI.
+---
 
-------------------------------------------------------------------------
+# Inventory Design
+
+A single inventory is created:
+
+```
+RHEL Upgrade Automation
+```
+
+with inventory groups:
+
+```text
+ALL_rhel
+├── rhel7
+├── rhel8
+└── rhel9
+```
+
+Operators select the desired inventory group at workflow launch.
+
+---
 
 # Upgrade Workflow
 
-``` text
-Analysis
-    │
-    ▼
-Create LVM Snapshot
-    │
-    ▼
-Leapp Preupgrade
-    │
-    ▼
+```text
+Fleet Analysis
+      │
+      ▼
+Create Snapshot
+      │
+      ▼
 Remediate Inhibitors
-    │
-    ▼
-Run Preupgrade Again
-    │
-    ▼
+      │
+      ▼
+Post-Remediation Analysis
+      │
+      ▼
 Run Leapp Upgrade
-    │
-    ▼
-Reboot
-    │
-    ▼
-Validate Upgrade
-    │
-    ├────────────── Success ───────────────► Remove Snapshot
-    │
-    └────────────── Failure ───────────────► Roll Back Snapshot
+      │
+      ▼
+Reboot Host
+      │
+      ▼
+Post Upgrade Validation
+      │
+      ├── Success ──► Remove Snapshot
+      └── Failure ──► Roll Back Snapshot
 ```
 
-------------------------------------------------------------------------
+---
 
 # Repository Layout
 
-``` text
+```text
 playbooks/
     configure-aap-rhel-upgrades.yml
 
 vars/
-    secrets.yml            (encrypted)
-    inventories.yml
+    secrets.yml
     credentials.yml
     projects.yml
+    groups.yml
+    surveys.yml
     job_templates.yml
     workflow_job_templates.yml
 ```
 
-------------------------------------------------------------------------
+---
 
-# Role of vars/secrets.yml
+# The Importance of `vars/secrets.yml`
 
-The `vars/secrets.yml` file is intended to be encrypted with Ansible
-Vault.
+`vars/secrets.yml` is the primary deployment profile for this project and should always be encrypted using Ansible Vault.
 
-It contains customer-specific values that should not be committed in
-plaintext.
-
-Typical contents include:
-
--   Controller hostname
--   Controller IP
--   Controller username/password
--   SSH private key
--   Default organization
--   Optional execution environment
--   Controller TLS validation setting
-
-Example structure:
-
-``` yaml
-controller_hostname:
-controller_ip:
-controller_username:
-controller_password:
-
-controller_organization:
-
-controller_validate_certs:
-
-controller_execution_environment:
-
-aap_ssh_username:
-aap_ssh_private_key:
+```bash
+ansible-vault encrypt vars/secrets.yml
 ```
 
-Because these values are isolated in one encrypted file, the same
-Infrastructure-as-Code repository can be reused across multiple AAP
-environments without changing the playbooks.
+Almost every customer-specific customization is performed in this single file. By changing only these values, the same Infrastructure-as-Code repository can be reused across development, lab, cloud, and production AAP environments.
 
-------------------------------------------------------------------------
+## Supported Variables
 
-# Customizing for Different Controllers
+| Variable | Required | Purpose |
+|-----------|----------|---------|
+| controller_hostname | Yes | Preferred AAP Gateway DNS name. |
+| controller_ip | Yes | Fallback controller IP address if DNS is unavailable. |
+| controller_username | Yes | AAP administrator account. |
+| controller_password | Yes | AAP administrator password (vault encrypted). |
+| controller_organization | Yes | Existing organization that will contain all created objects. |
+| controller_validate_certs | No | Enable or disable TLS certificate validation. |
+| controller_execution_environment | No | Default EE for bootstrap tasks when applicable. |
+| **leapp_execution_environment** | No | **Execution Environment assigned to all Leapp Job Templates. Leave blank (`""`) to use the AAP Controller default Execution Environment.** |
+| aap_ssh_username | Yes | Username used by the Machine Credential. |
+| aap_ssh_private_key | Yes | Private SSH key used by the Machine Credential (vault encrypted). |
+| git_username | Optional | Username for private Git repositories. |
+| git_password | Optional | Password or Personal Access Token for Git. |
+| git_ssh_private_key | Optional | SSH private key for Git authentication. |
 
-A new customer typically only changes:
+## Example
 
--   `vars/secrets.yml`
--   `vars/inventories.yml`
--   `vars/projects.yml`
+```yaml
+controller_hostname: aap.example.com
+controller_ip: 192.168.1.25
 
-Everything else can remain unchanged.
+controller_username: admin
+controller_password: !vault |
+  ...
 
-Examples include:
+controller_organization: Default
 
--   Different controller hostname
--   Different organization
--   Different SSH credential
--   Different Git branch
--   Different execution environment
--   Different inventory names
+controller_validate_certs: false
 
-------------------------------------------------------------------------
+controller_execution_environment: Default execution environment
+
+# Leave blank to use the AAP default EE.
+leapp_execution_environment: ""
+
+aap_ssh_username: ec2-user
+aap_ssh_private_key: !vault |
+  ...
+
+git_username: gituser
+git_password: !vault |
+  ...
+git_ssh_private_key: !vault |
+  ...
+```
+
+## Deployment Tuning
+
+Typical changes between environments include:
+
+- Controller hostname/IP
+- Organization
+- SSH username (ec2-user, azureuser, cloud-user, ansible, root, etc.)
+- TLS validation
+- Default Execution Environment
+- Leapp-specific Execution Environment
+- Git authentication method
+
+No playbook changes are normally required.
+
+---
 
 # Bootstrap Sequence
 
-The bootstrap playbook performs the following:
+1. Load encrypted configuration.
+2. Discover the reachable AAP Controller.
+3. Authenticate.
+4. Verify the target organization.
+5. Create the RHEL Upgrade Automation inventory.
+6. Create the ALL_rhel, rhel7, rhel8 and rhel9 groups.
+7. Create credentials.
+8. Create the Git project.
+9. Synchronize the project.
+10. Create Job Templates.
+11. Create Workflow Job Templates.
+12. Bootstrap complete.
 
-1.  Load encrypted configuration.
-2.  Locate the reachable AAP Controller.
-3.  Verify connectivity.
-4.  Verify the target organization exists.
-5.  Create inventories.
-6.  Create credentials.
-7.  Create the AAP project.
-8.  Synchronize the Git repository.
-9.  Create job templates.
-10. Create workflow job templates.
-
-------------------------------------------------------------------------
-
-# Git Project
-
-The AAP Project references the Leapp automation repository.
-
-During bootstrap the project is synchronized before any job templates
-are created so that all referenced playbooks already exist in the
-project.
-
-------------------------------------------------------------------------
+---
 
 # Enterprise Design Goals
 
--   Idempotent
--   Infrastructure as Code
--   Reusable across multiple customers
--   Controller-agnostic
--   Git-driven
--   Secure (Ansible Vault)
--   Minimal customer customization
--   Supports future RHEL upgrade paths
+- Infrastructure as Code
+- Idempotent
+- Git-driven
+- Secure using Ansible Vault
+- Reusable across customer environments
+- Controller agnostic
+- Minimal customer customization
+- Supports future RHEL major upgrade paths
 
-------------------------------------------------------------------------
+---
 
 # Running
 
-``` bash
-ansible-playbook playbooks/configure-aap-rhel-upgrades.yml \
-  --ask-vault-pass
+```bash
+ansible-playbook playbooks/configure-aap-rhel-upgrades.yml --ask-vault-pass -vvv
 ```
 
-After completion, the controller contains all inventories, credentials,
-projects, job templates, and workflows required to perform managed Leapp
-upgrades.
+After completion, the controller is fully configured for managed RHEL major version upgrade workflows.
