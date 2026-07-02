@@ -10,6 +10,7 @@
 
   vars_files:
     - ../vars/secrets.yml
+    - ../vars/credential_types.yml
     - ../vars/credentials.yml
     - ../vars/projects.yml
     - ../vars/job_templates.yml
