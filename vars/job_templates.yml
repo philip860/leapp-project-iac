@@ -17,7 +17,7 @@ controller_templates:
   - name: 02 - Create Snapshot
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
-    inventory: RHEL 8 Fleet
+    inventory: RHEL Upgrade Automation
     playbook: snapshot_instance_lvm.yml
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
@@ -33,7 +33,7 @@ controller_templates:
   - name: 03 - Remediate Inhibitors
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
-    inventory: RHEL 8 Fleet
+    inventory: RHEL Upgrade Automation
     playbook: remediate.yml
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
@@ -47,7 +47,7 @@ controller_templates:
   - name: 04 - Run Leapp Upgrade
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
-    inventory: RHEL 8 Fleet
+    inventory: RHEL Upgrade Automation
     playbook: upgrade.yml
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
@@ -61,7 +61,7 @@ controller_templates:
   - name: 05 - Reboot Host
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
-    inventory: RHEL 8 Fleet
+    inventory: RHEL Upgrade Automation
     playbook: reboot.yml
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
@@ -75,7 +75,7 @@ controller_templates:
   - name: 06 - Post Upgrade Validation
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
-    inventory: RHEL 8 Fleet
+    inventory: RHEL Upgrade Automation
     playbook: validate.yml
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
@@ -89,7 +89,7 @@ controller_templates:
   - name: 07 - Remove Snapshot
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
-    inventory: RHEL 8 Fleet
+    inventory: RHEL Upgrade Automation
     playbook: snapshot_instance_lvm.yml
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
@@ -105,7 +105,7 @@ controller_templates:
   - name: 08 - Rollback Snapshot
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
-    inventory: RHEL 8 Fleet
+    inventory: RHEL Upgrade Automation
     playbook: snapshot_instance_lvm.yml
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
