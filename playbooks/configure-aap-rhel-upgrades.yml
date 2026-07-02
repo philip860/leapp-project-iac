@@ -112,7 +112,7 @@
         - name: Configure RHEL Upgrade Automation inventory
           ansible.controller.inventory:
             name: RHEL Upgrade Automation
-            organization: "{{ controller_organization | default('Default') }}"
+            organization: "{{ controller_organization }}"
             description: Inventory for RHEL Leapp upgrade automation across RHEL 7, 8, 9, and future RHEL 10 systems
             state: present
             controller_host: "{{ controller_host }}"
@@ -134,6 +134,13 @@
           loop: "{{ controller_groups }}"
           loop_control:
             label: "{{ item.name }}"
+
+        - name: Configure AAP custom credential types
+          ansible.builtin.include_role:
+            name: infra.aap_configuration.controller_credential_types
+          when:
+            - controller_credential_types is defined
+            - controller_credential_types | length > 0
 
         - name: Configure AAP credentials
           ansible.builtin.include_role:
