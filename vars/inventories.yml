@@ -1,26 +1,6 @@
 ---
 controller_inventories:
-  - name: RHEL 7 Fleet
+  - name: RHEL Upgrade Automation
     organization: "{{ controller_organization | default('Default') }}"
-    description: RHEL 7 hosts targeted for RHEL 7 to RHEL 8 upgrades
-    variables:
-      source_rhel_major_version: 7
-      target_rhel_major_version: 8
-      leapp_upgrade_path: rhel7_to_rhel8
-
-  - name: RHEL 8 Fleet
-    organization: "{{ controller_organization | default('Default') }}"
-    description: RHEL 8 hosts targeted for RHEL 8 to RHEL 9 upgrades
-    variables:
-      source_rhel_major_version: 8
-      target_rhel_major_version: 9
-      leapp_upgrade_path: rhel8_to_rhel9
-
-  - name: RHEL 9 Fleet
-    organization: "{{ controller_organization | default('Default') }}"
-    description: RHEL 9 hosts targeted for RHEL 9 to RHEL 10 upgrades
-    variables:
-      source_rhel_major_version: 9
-      target_rhel_major_version: 10
-      leapp_upgrade_path: rhel9_to_rhel10
-      upgrade_support_status: future
+    description: Inventory for RHEL Leapp upgrade automation across RHEL 7, 8, 9, and future RHEL 10 systems
+    variables: {}
