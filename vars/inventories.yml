@@ -3,4 +3,3 @@ controller_inventories:
   - name: RHEL Upgrade Automation
     organization: "{{ controller_organization | default('Default') }}"
     description: Inventory for RHEL Leapp upgrade automation across RHEL 7, 8, 9, and future RHEL 10 systems
-    variables: {}
