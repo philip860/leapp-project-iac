@@ -120,8 +120,19 @@
             validate_certs: "{{ controller_validate_certs | default(false) }}"
 
         - name: Configure AAP inventory groups
-          ansible.builtin.include_role:
-            name: infra.aap_configuration.controller_groups
+          ansible.controller.group:
+            name: "{{ item.name }}"
+            inventory: "{{ item.inventory }}"
+            description: "{{ item.description | default(omit) }}"
+            variables: "{{ item.variables | default({}) }}"
+            state: present
+            controller_host: "{{ controller_host }}"
+            controller_username: "{{ controller_username }}"
+            controller_password: "{{ controller_password }}"
+            validate_certs: "{{ controller_validate_certs | default(false) }}"
+          loop: "{{ controller_groups }}"
+          loop_control:
+            label: "{{ item.name }}"
 
         - name: Configure AAP credentials
           ansible.builtin.include_role:
