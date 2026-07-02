@@ -3,7 +3,7 @@ controller_templates:
   - name: 01 - Fleet Analysis
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
-    inventory: RHEL 8 Fleet
+    inventory: RHEL Upgrade Automation
     playbook: analysis.yml
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
