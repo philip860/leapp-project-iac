@@ -10,7 +10,6 @@
 
   vars_files:
     - ../vars/secrets.yml
-    - ../vars/inventories.yml
     - ../vars/credentials.yml
     - ../vars/projects.yml
     - ../vars/job_templates.yml
@@ -109,14 +108,21 @@
 
     - name: Configure AAP RHEL Fleet Upgrade objects
       block:
-        - name: Configure AAP inventories
-          ansible.builtin.include_role:
-            name: infra.aap_configuration.controller_inventories
-        
+        - name: Configure RHEL Upgrade Automation inventory
+          ansible.controller.inventory:
+            name: RHEL Upgrade Automation
+            organization: "{{ controller_organization | default('Default') }}"
+            description: Inventory for RHEL Leapp upgrade automation across RHEL 7, 8, 9, and future RHEL 10 systems
+            state: present
+            controller_host: "{{ controller_host }}"
+            controller_username: "{{ controller_username }}"
+            controller_password: "{{ controller_password }}"
+            validate_certs: "{{ controller_validate_certs | default(false) }}"
+
         - name: Configure AAP inventory groups
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_groups
-        
+
         - name: Configure AAP credentials
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_credentials
