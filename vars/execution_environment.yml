@@ -3,4 +3,4 @@ controller_execution_environments:
   - name: leapp-snapshot-ee
     description: Execution environment for RHEL Leapp snapshot and upgrade automation
     image: "{{ snapshot_execution_environment | default('quay.io/philip860/leapp-upgrade:v1', true) }}"
-    pull: missing
+    pull: always
