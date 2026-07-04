@@ -211,13 +211,18 @@
           ansible.controller.project_update:
             name: "{{ item.name }}"
             wait: true
-            timeout: 600
+            interval: 10
+            timeout: 1800
+            request_timeout: 120
             controller_host: "{{ controller_host }}"
             controller_username: "{{ controller_username }}"
             controller_password: "{{ controller_password }}"
             validate_certs: "{{ controller_validate_certs | default(false) }}"
           loop: "{{ controller_projects }}"
-
+          loop_control:
+            label: "{{ item.name }}"
+          when:
+            - item.update_project | default(true) | bool
 
         - name: Configure AAP job templates
           ansible.builtin.include_role:
