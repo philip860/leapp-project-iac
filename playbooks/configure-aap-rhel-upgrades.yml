@@ -135,9 +135,21 @@
           loop_control:
             label: "{{ item.name }}"
 
-        - name: Configure AAP custom credential types
-          ansible.builtin.include_role:
-            name: infra.aap_configuration.controller_credential_types
+        - name: Configure AAP custom credential types directly
+          ansible.controller.credential_type:
+            name: "{{ item.name }}"
+            description: "{{ item.description | default(omit) }}"
+            kind: "{{ item.kind | default('cloud') }}"
+            inputs: "{{ item.inputs }}"
+            injectors: "{{ item.injectors }}"
+            state: present
+            controller_host: "{{ controller_host }}"
+            controller_username: "{{ controller_username }}"
+            controller_password: "{{ controller_password }}"
+            validate_certs: "{{ controller_validate_certs | default(false) }}"
+          loop: "{{ controller_credential_types }}"
+          loop_control:
+            label: "{{ item.name }}"
           when:
             - controller_credential_types is defined
             - controller_credential_types | length > 0
