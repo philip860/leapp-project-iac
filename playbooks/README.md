@@ -153,6 +153,13 @@ Almost every customer-specific customization is performed in this single file. B
 | **leapp_execution_environment** | No | **Execution Environment assigned to all Leapp Job Templates. Leave blank (`""`) to use the AAP Controller default Execution Environment.** |
 | aap_ssh_username | Yes | Username used by the Machine Credential. |
 | aap_ssh_private_key | Yes | Private SSH key used by the Machine Credential (vault encrypted). |
+| rhsm_activate | No | Enables optional RHSM/Satellite registration during analysis. |
+| rhsm_org | Optional | Red Hat organization ID or Satellite organization. |
+| rhsm_activation_key | Optional | Activation key used for RHSM/Satellite registration. |
+| rhsm_username | Optional | Red Hat username used if username/password registration is preferred. |
+| rhsm_password | Optional | Red Hat password used with `rhsm_username` and should be vault encrypted. |
+| rhsm_server_url | Optional | Satellite server hostname. Leave blank for Red Hat hosted RHSM. |
+| rhsm_auto_attach | Optional | Controls automatic subscription attachment when applicable. |
 | git_username | Optional | Username for private Git repositories. |
 | git_password | Optional | Password or Personal Access Token for Git. |
 | git_ssh_private_key | Optional | SSH private key for Git authentication. |
