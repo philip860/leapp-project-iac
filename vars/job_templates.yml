@@ -21,7 +21,7 @@ controller_templates:
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Automation
     playbook: snapshot_instance_lvm.yml
-    execution_environment: "{{ controller_execution_environment | default(omit) }}"
+    execution_environment: "{{ snapshot_execution_environment | default('quay.io/philip860/leapp-upgrade:v1') }}"
     credentials:
       - RHEL Machine Credential
     extra_vars:
@@ -93,7 +93,7 @@ controller_templates:
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Automation
     playbook: snapshot_instance_lvm.yml
-    execution_environment: "{{ controller_execution_environment | default(omit) }}"
+    execution_environment: "{{ snapshot_execution_environment | default('quay.io/philip860/leapp-upgrade:v1') }}"
     credentials:
       - RHEL Machine Credential
     extra_vars:
@@ -109,7 +109,7 @@ controller_templates:
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Automation
     playbook: snapshot_instance_lvm.yml
-    execution_environment: "{{ controller_execution_environment | default(omit) }}"
+    execution_environment: "{{ snapshot_execution_environment | default('quay.io/philip860/leapp-upgrade:v1') }}"
     credentials:
       - RHEL Machine Credential
     extra_vars:
