@@ -169,13 +169,13 @@
             organization: "{{ controller_organization }}"
             credential_type: RHEL Satellite
             inputs:
-              satellite_rhsm_activate: "{{ satellite_rhsm_activate | default('false') }}"
+              satellite_rhsm_activate: "{{ satellite_rhsm_activate | default(false) | string | lower }}"
               satellite_rhsm_username: "{{ satellite_rhsm_username | default('') }}"
               satellite_rhsm_password: "{{ satellite_rhsm_password | default('') }}"
               satellite_rhsm_activation_key: "{{ satellite_rhsm_activation_key | default('') }}"
               satellite_rhsm_org: "{{ satellite_rhsm_org | default('') }}"
               satellite_rhsm_server_url: "{{ satellite_rhsm_server_url | default('') }}"
-              satellite_rhsm_auto_attach: "{{ satellite_rhsm_auto_attach | default('true') }}"
+              satellite_rhsm_auto_attach: "{{ satellite_rhsm_auto_attach | default(true) | string | lower }}"
             state: present
             controller_host: "{{ controller_host }}"
             controller_username: "{{ controller_username }}"
