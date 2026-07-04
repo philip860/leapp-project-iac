@@ -17,6 +17,7 @@
     - ../vars/workflow_job_templates.yml
     - ../vars/surveys.yml
     - ../vars/groups.yml
+    - ../vars/execution_environment.yml
 
   vars:
     controller_organization: "{{ controller_organization | default('Default') }}"
