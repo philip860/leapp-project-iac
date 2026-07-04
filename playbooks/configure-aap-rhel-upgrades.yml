@@ -10,6 +10,7 @@
 
   vars_files:
     - ../vars/secrets.yml
+    - ../vars/credential_types.yml
     - ../vars/credentials.yml
     - ../vars/projects.yml
     - ../vars/job_templates.yml
@@ -134,52 +135,12 @@
           loop_control:
             label: "{{ item.name }}"
 
-        - name: Configure RHEL Satellite custom credential type directly
+        - name: Configure AAP custom credential types directly
           ansible.controller.credential_type:
-            name: RHEL Satellite
-            description: RHSM or Satellite registration settings for RHEL upgrade workflows
-            kind: cloud
-            inputs:
-              fields:
-                - id: satellite_rhsm_activate
-                  type: string
-                  label: Activate/Register host with RHSM or Satellite
-                  choices:
-                    - "true"
-                    - "false"
-
-                - id: satellite_rhsm_username
-                  type: string
-                  label: RHSM/Satellite Username
-
-                - id: satellite_rhsm_password
-                  type: string
-                  label: RHSM/Satellite Password
-                  secret: true
-
-                - id: satellite_rhsm_activation_key
-                  type: string
-                  label: RHSM/Satellite Activation Key
-                  secret: true
-
-                - id: satellite_rhsm_org
-                  type: string
-                  label: RHSM/Satellite Organization
-
-                - id: satellite_rhsm_server_url
-                  type: string
-                  label: RHSM/Satellite Server URL
-
-                - id: satellite_rhsm_auto_attach
-                  type: string
-                  label: Auto Attach Subscription
-                  choices:
-                    - "true"
-                    - "false"
-
-              required:
-                - satellite_rhsm_activate
-
+            name: "{{ item.name }}"
+            description: "{{ item.description | default(omit) }}"
+            kind: "{{ item.kind | default('cloud') }}"
+            inputs: "{{ item.inputs }}"
             injectors:
               extra_vars:
                 rhsm_activate: "{{ '{{' }} satellite_rhsm_activate {{ '}}' }}"
@@ -189,12 +150,17 @@
                 rhsm_org: "{{ '{{' }} satellite_rhsm_org {{ '}}' }}"
                 rhsm_server_url: "{{ '{{' }} satellite_rhsm_server_url {{ '}}' }}"
                 rhsm_auto_attach: "{{ '{{' }} satellite_rhsm_auto_attach {{ '}}' }}"
-
             state: present
             controller_host: "{{ controller_host }}"
             controller_username: "{{ controller_username }}"
             controller_password: "{{ controller_password }}"
             validate_certs: "{{ controller_validate_certs | default(false) }}"
+          loop: "{{ controller_credential_types }}"
+          loop_control:
+            label: "{{ item.name }}"
+          when:
+            - controller_credential_types is defined
+            - controller_credential_types | length > 0
 
         - name: Configure AAP credentials
           ansible.builtin.include_role:
