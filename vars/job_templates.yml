@@ -8,7 +8,7 @@ controller_templates:
     execution_environment: "{{ controller_execution_environment | default(omit) }}"
     credentials:
       - RHEL Machine Credential
-      - RHEL Satellite
+      - RHEL Satellite Credential
     
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
