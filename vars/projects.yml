@@ -5,7 +5,7 @@ controller_projects:
     description: Automation project for RHEL Leapp upgrade workflows
     scm_type: git
     scm_url: https://github.com/philip860/leapp-project.git
-    scm_branch: fix-error-in-upgrade-process
+    scm_branch: add-rhsm-activation
     scm_update_on_launch: true
     scm_clean: true
     scm_delete_on_update: true
