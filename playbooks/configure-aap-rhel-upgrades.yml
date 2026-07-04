@@ -162,9 +162,41 @@
             - controller_credential_types is defined
             - controller_credential_types | length > 0
 
-        - name: Configure AAP credentials
+        - name: Configure RHEL Satellite credential directly
+          ansible.controller.credential:
+            name: RHEL Satellite
+            description: RHSM or Satellite registration credential
+            organization: "{{ controller_organization }}"
+            credential_type: RHEL Satellite
+            inputs:
+              satellite_rhsm_activate: "{{ satellite_rhsm_activate | default('false') }}"
+              satellite_rhsm_username: "{{ satellite_rhsm_username | default('') }}"
+              satellite_rhsm_password: "{{ satellite_rhsm_password | default('') }}"
+              satellite_rhsm_activation_key: "{{ satellite_rhsm_activation_key | default('') }}"
+              satellite_rhsm_org: "{{ satellite_rhsm_org | default('') }}"
+              satellite_rhsm_server_url: "{{ satellite_rhsm_server_url | default('') }}"
+              satellite_rhsm_auto_attach: "{{ satellite_rhsm_auto_attach | default('true') }}"
+            state: present
+            controller_host: "{{ controller_host }}"
+            controller_username: "{{ controller_username }}"
+            controller_password: "{{ controller_password }}"
+            validate_certs: "{{ controller_validate_certs | default(false) }}"
+
+        - name: Remove directly managed RHEL Satellite credential from role list
+          ansible.builtin.set_fact:
+            controller_credentials: >-
+              {{
+                controller_credentials | default([])
+                | rejectattr('name', 'equalto', 'RHEL Satellite')
+                | list
+              }}
+
+        - name: Configure remaining AAP credentials
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_credentials
+          when:
+            - controller_credentials is defined
+            - controller_credentials | length > 0
 
         - name: Configure AAP projects
           ansible.builtin.include_role:
