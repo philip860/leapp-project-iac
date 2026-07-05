@@ -97,6 +97,7 @@ controller_templates:
     execution_environment: "leapp-snapshot-ee"
     credentials:
       - RHEL Machine Credential
+      - RHEL AWS Credential
     extra_vars:
       lvm_snapshots_action: remove
     ask_inventory_on_launch: true
@@ -113,6 +114,7 @@ controller_templates:
     execution_environment: "leapp-snapshot-ee"
     credentials:
       - RHEL Machine Credential
+      - RHEL AWS Credential
     extra_vars:
       lvm_snapshots_action: revert
     ask_inventory_on_launch: true
