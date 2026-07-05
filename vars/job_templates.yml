@@ -24,6 +24,7 @@ controller_templates:
     execution_environment: "leapp-snapshot-ee"
     credentials:
       - RHEL Machine Credential
+      - RHEL AWS Credential
     extra_vars:
       snapshot_action: create
     ask_inventory_on_launch: true
