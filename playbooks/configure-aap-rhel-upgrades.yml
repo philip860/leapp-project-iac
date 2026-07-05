@@ -13,6 +13,7 @@
     - ../vars/credential_types.yml
     - ../vars/credentials.yml
     - ../vars/projects.yml
+    - ../vars/snapshot_credentials.yml
     - ../vars/job_templates.yml
     - ../vars/workflow_job_templates.yml
     - ../vars/surveys.yml
@@ -89,8 +90,13 @@
         aap_validate_certs: "{{ controller_validate_certs | default(false) }}"
       no_log: true
 
-  tasks:
+    - name: Display resolved snapshot credential list
+      ansible.builtin.debug:
+        msg:
+          - "Snapshot credentials selected for snapshot job templates:"
+          - "{{ rhel_snapshot_credentials }}"
 
+  tasks:
     - name: Verify target AAP organization exists
       ansible.controller.organization:
         name: "{{ controller_organization }}"
@@ -102,7 +108,6 @@
 
     - name: Configure AAP RHEL Fleet Upgrade objects
       block:
-
         - name: Configure RHEL Upgrade Automation inventory
           ansible.controller.inventory:
             name: RHEL Upgrade Automation
@@ -113,7 +118,6 @@
             controller_username: "{{ controller_username }}"
             controller_password: "{{ controller_password }}"
             validate_certs: "{{ controller_validate_certs | default(false) }}"
-
 
         - name: Configure AAP inventory groups
           ansible.controller.group:
@@ -128,7 +132,6 @@
             validate_certs: "{{ controller_validate_certs | default(false) }}"
           loop: "{{ controller_groups }}"
 
-
         ########################################################
         # Custom Credential Types
         ########################################################
@@ -139,7 +142,6 @@
             description: "{{ item.description }}"
             kind: "{{ item.kind }}"
             inputs: "{{ item.inputs }}"
-
             injectors:
               extra_vars:
                 rhsm_activate: "{{ '{{' }} satellite_rhsm_activate {{ '}}' }}"
@@ -149,14 +151,12 @@
                 rhsm_org: "{{ '{{' }} satellite_rhsm_org {{ '}}' }}"
                 rhsm_server_url: "{{ '{{' }} satellite_rhsm_server_url {{ '}}' }}"
                 rhsm_auto_attach: "{{ '{{' }} satellite_rhsm_auto_attach {{ '}}' }}"
-
             state: present
             controller_host: "{{ controller_host }}"
             controller_username: "{{ controller_username }}"
             controller_password: "{{ controller_password }}"
             validate_certs: "{{ controller_validate_certs | default(false) }}"
           loop: "{{ controller_credential_types }}"
-
 
         ########################################################
         # Satellite Credential Direct Creation
@@ -168,7 +168,6 @@
             description: RHSM or Satellite registration credential
             organization: "{{ controller_organization }}"
             credential_type: RHEL Satellite
-
             inputs:
               satellite_rhsm_activate: "{{ satellite_rhsm_activate | default(false) | string | lower }}"
               satellite_rhsm_username: "{{ satellite_rhsm_username | default('') }}"
@@ -177,13 +176,11 @@
               satellite_rhsm_org: "{{ satellite_rhsm_org | default('') }}"
               satellite_rhsm_server_url: "{{ satellite_rhsm_server_url | default('') }}"
               satellite_rhsm_auto_attach: "{{ satellite_rhsm_auto_attach | default(true) | string | lower }}"
-
             state: present
             controller_host: "{{ controller_host }}"
             controller_username: "{{ controller_username }}"
             controller_password: "{{ controller_password }}"
             validate_certs: "{{ controller_validate_certs | default(false) }}"
-
 
         - name: Remove directly managed Satellite credential from role list
           ansible.builtin.set_fact:
@@ -195,6 +192,17 @@
                 | list
               }}
 
+        - name: Remove AWS credential from role list when AWS secrets are not provided
+          ansible.builtin.set_fact:
+            controller_credentials: >-
+              {{
+                controller_credentials | default([])
+                | rejectattr('name','equalto','RHEL AWS Credential')
+                | list
+              }}
+          when:
+            - aws_access_key | default('') | length == 0
+              or aws_secret_key | default('') | length == 0
 
         - name: Configure remaining AAP credentials
           ansible.builtin.include_role:
@@ -202,11 +210,9 @@
           when:
             - controller_credentials | length > 0
 
-
         - name: Configure AAP projects
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_projects
-
 
         - name: Synchronize configured AAP projects
           ansible.controller.project_update:
@@ -244,11 +250,9 @@
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_job_templates
 
-
         - name: Configure AAP workflow job templates
           ansible.builtin.include_role:
             name: infra.aap_configuration.controller_workflow_job_templates
-
 
       environment:
         CONTROLLER_HOST: "{{ controller_host }}"
