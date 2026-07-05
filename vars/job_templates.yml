@@ -25,7 +25,7 @@ controller_templates:
     credentials:
       - RHEL Machine Credential
     extra_vars:
-      lvm_snapshots_action: create
+      snapshot_action: create
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
     ask_variables_on_launch: true
