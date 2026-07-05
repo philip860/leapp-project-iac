@@ -20,7 +20,7 @@ controller_templates:
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Automation
-    playbook: snapshot_instance_lvm.yml
+    playbook: snapshot_dispatcher.yml
     execution_environment: "leapp-snapshot-ee"
     credentials:
       - RHEL Machine Credential
