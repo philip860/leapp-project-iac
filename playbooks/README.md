@@ -151,8 +151,14 @@ Almost every customer-specific customization is performed in this single file. B
 | controller_validate_certs | No | Enable or disable TLS certificate validation. |
 | controller_execution_environment | No | Default EE for bootstrap tasks when applicable. |
 | **leapp_execution_environment** | No | **Execution Environment assigned to all Leapp Job Templates. Leave blank (`""`) to use the AAP Controller default Execution Environment.** |
+| **snapshot_execution_environment** | No | **Execution Environment assigned to snapshot Job Templates. Defaults to the Leapp snapshot EE if left unchanged.** |
 | aap_ssh_username | Yes | Username used by the Machine Credential. |
 | aap_ssh_private_key | Yes | Private SSH key used by the Machine Credential (vault encrypted). |
+
+### Red Hat Subscription Manager (RHSM) / Satellite Variables
+
+| Variable | Required | Purpose |
+|-----------|----------|---------|
 | rhsm_activate | No | Enables optional RHSM/Satellite registration during analysis. |
 | rhsm_org | Optional | Red Hat organization ID or Satellite organization. |
 | rhsm_activation_key | Optional | Activation key used for RHSM/Satellite registration. |
@@ -160,10 +166,34 @@ Almost every customer-specific customization is performed in this single file. B
 | rhsm_password | Optional | Red Hat password used with `rhsm_username` and should be vault encrypted. |
 | rhsm_server_url | Optional | Satellite server hostname. Leave blank for Red Hat hosted RHSM. |
 | rhsm_auto_attach | Optional | Controls automatic subscription attachment when applicable. |
+
+### AWS Snapshot Variables (Optional)
+
+These variables are only required when using AWS EBS snapshot automation.
+
+| Variable | Required | Purpose |
+|-----------|----------|---------|
+| aws_access_key | Optional | AWS access key used by the AAP AWS Credential. Should be vault encrypted. |
+| aws_secret_key | Optional | AWS secret access key used by the AAP AWS Credential. Should be vault encrypted. |
+| aws_session_token | Optional | Temporary AWS session token when using STS credentials. Should be vault encrypted. |
+| snapshot_aws_region | Optional | AWS region used for EC2/EBS snapshot operations. Leave blank to auto-detect from EC2 metadata. |
+| snapshot_aws_instance_id | Optional | EC2 instance ID to snapshot. Leave blank to auto-detect from EC2 metadata. |
+| snapshot_aws_description | Optional | Description prefix applied to created EBS snapshots. |
+| snapshot_aws_tags | Optional | Additional tags applied to created EBS snapshots. |
+| snapshot_aws_wait | Optional | Wait for AWS EBS snapshots to reach completion before finishing the job. |
+| snapshot_aws_wait_timeout | Optional | Maximum time in seconds to wait for snapshots to complete. |
+| snapshot_aws_delete_on_remove | Optional | Delete AWS snapshots when running the remove snapshot action. |
+| snapshot_aws_fail_when_no_volumes | Optional | Fail the workflow if no EBS volumes are detected. |
+| snapshot_aws_snapshot_all_volumes | Optional | Snapshot all attached EBS volumes automatically. |
+| snapshot_aws_volume_ids | Optional | Explicit list of EBS volume IDs to snapshot instead of auto-detected volumes. |
+
+### Git Authentication Variables
+
+| Variable | Required | Purpose |
+|-----------|----------|---------|
 | git_username | Optional | Username for private Git repositories. |
 | git_password | Optional | Password or Personal Access Token for Git. |
 | git_ssh_private_key | Optional | SSH private key for Git authentication. |
-
 ## Example
 
 ```yaml
