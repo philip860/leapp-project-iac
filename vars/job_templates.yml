@@ -9,7 +9,6 @@ controller_templates:
     credentials:
       - RHEL Machine Credential
       - RHEL Satellite Credential
-    
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
     ask_variables_on_launch: true
@@ -22,11 +21,10 @@ controller_templates:
     inventory: RHEL Upgrade Automation
     playbook: snapshot_dispatcher.yml
     execution_environment: "leapp-snapshot-ee"
-    credentials:
-      - RHEL Machine Credential
-      - RHEL AWS Credential
+    credentials: "{{ rhel_snapshot_credentials }}"
     extra_vars:
       snapshot_action: create
+      snapshot_provider: auto
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
     ask_variables_on_launch: true
@@ -93,13 +91,12 @@ controller_templates:
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Automation
-    playbook: snapshot_instance_lvm.yml
+    playbook: snapshot_dispatcher.yml
     execution_environment: "leapp-snapshot-ee"
-    credentials:
-      - RHEL Machine Credential
-      - RHEL AWS Credential
+    credentials: "{{ rhel_snapshot_credentials }}"
     extra_vars:
-      lvm_snapshots_action: remove
+      snapshot_action: remove
+      snapshot_provider: auto
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
     ask_variables_on_launch: true
@@ -110,13 +107,12 @@ controller_templates:
     organization: "{{ controller_organization | default('Default') }}"
     project: RHEL Upgrade Automation
     inventory: RHEL Upgrade Automation
-    playbook: snapshot_instance_lvm.yml
+    playbook: snapshot_dispatcher.yml
     execution_environment: "leapp-snapshot-ee"
-    credentials:
-      - RHEL Machine Credential
-      - RHEL AWS Credential
+    credentials: "{{ rhel_snapshot_credentials }}"
     extra_vars:
-      lvm_snapshots_action: revert
+      snapshot_action: revert
+      snapshot_provider: auto
     ask_inventory_on_launch: true
     ask_limit_on_launch: true
     ask_variables_on_launch: true
