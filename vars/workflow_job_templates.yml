@@ -216,3 +216,86 @@ controller_workflows:
           organization:
             name: "{{ controller_organization | default('Default') }}"
           type: job_template
+        related:
+          success_nodes:
+            - identifier: create_snapshot
+
+      - identifier: create_snapshot
+        unified_job_template:
+          name: 02 - Create Snapshot
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
+        related:
+          success_nodes:
+            - identifier: remediate_inhibitors
+
+      - identifier: remediate_inhibitors
+        unified_job_template:
+          name: 03 - Remediate Inhibitors
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
+        related:
+          success_nodes:
+            - identifier: post_remediation_analysis
+
+      - identifier: post_remediation_analysis
+        unified_job_template:
+          name: 01 - Fleet Analysis
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
+        related:
+          success_nodes:
+            - identifier: run_leapp_upgrade
+
+      - identifier: run_leapp_upgrade
+        unified_job_template:
+          name: 04 - Run Leapp Upgrade
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
+        related:
+          success_nodes:
+            - identifier: reboot_host
+          failure_nodes:
+            - identifier: rollback_snapshot
+
+      - identifier: reboot_host
+        unified_job_template:
+          name: 05 - Reboot Host
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
+        related:
+          success_nodes:
+            - identifier: post_upgrade_validation
+          failure_nodes:
+            - identifier: rollback_snapshot
+
+      - identifier: post_upgrade_validation
+        unified_job_template:
+          name: 06 - Post Upgrade Validation
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
+        related:
+          success_nodes:
+            - identifier: remove_snapshot
+          failure_nodes:
+            - identifier: rollback_snapshot
+
+      - identifier: remove_snapshot
+        unified_job_template:
+          name: 07 - Remove Snapshot
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
+
+      - identifier: rollback_snapshot
+        unified_job_template:
+          name: 08 - Rollback Snapshot
+          organization:
+            name: "{{ controller_organization | default('Default') }}"
+          type: job_template
